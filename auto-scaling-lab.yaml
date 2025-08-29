@@ -124,6 +124,20 @@ Resources:
         - Key: Name
           Value: !Sub ${AWS::StackName}-PrivateSubnet2
 
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-NatGateway
+
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -150,6 +164,33 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-PrivateRouteTable
+
+  PrivateRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
 
   # Security Groups
   ALBSecurityGroup:
@@ -252,14 +293,14 @@ Resources:
           <button onclick="stressCPU()">Stress Test CPU</button>
           <script>
           function stressCPU() {
-              var xhttp = new XMLHttpRequest();
-              xhttp.onreadystatechange = function() {
-                  if (this.readyState == 4 && this.status == 200) {
-                      alert("CPU stress test started!");
-                  }
-              };
-              xhttp.open("GET", "/stress.sh", true);
-              xhttp.send();
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                alert("CPU stress test started!");
+              }
+            };
+            xhttp.open("GET", "/stress.sh", true);
+            xhttp.send();
           }
           </script>
           </body>
@@ -301,7 +342,7 @@ Resources:
       TargetTrackingConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
-        TargetValue: 30
+        TargetValue: 50
 
 Outputs:
   LoadBalancerDNS:
