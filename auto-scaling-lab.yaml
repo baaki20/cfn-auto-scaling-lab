@@ -300,7 +300,7 @@ Resources:
       PolicyType: TargetTrackingScaling
       TargetTrackingConfiguration:
         PredefinedMetricSpecification:
-          PredefinedMetricType: ASGCPUUtilization
+          PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 30
 
 Outputs:
