@@ -271,14 +271,6 @@ Resources:
           echo "CPU stress initiated"
           EOL
           chmod +x /var/www/html/stress.sh
-        TagSpecifications:
-          - ResourceType: instance
-            Tags:
-              - Key: Name
-                Value: !Sub ${AWS::StackName}-Web-Server
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-LaunchTemplate
 
   # Auto Scaling Group
   AutoScalingGroup:
