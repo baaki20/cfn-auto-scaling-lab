@@ -53,10 +53,10 @@ Parameters:
 Mappings:
   SubnetAzMap:
     eu-central-1:
-      PublicSubnet1Az: us-east-1a
-      PublicSubnet2Az: us-east-1b
-      PrivateSubnet1Az: us-east-1a
-      PrivateSubnet2Az: us-east-1b
+      PublicSubnet1Az: eu-central-1a
+      PublicSubnet2Az: eu-central-1b
+      PrivateSubnet1Az: eu-central-1a
+      PrivateSubnet2Az: eu-central-1b
 
 Resources:
   VPC:
